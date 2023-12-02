@@ -20,13 +20,13 @@ classdef ARobotarium < handle
         % Path to mat file to keep this in memory
         mat_file_path
         boundary_patch
-        boundary_points = {[-2.5, 3, 3, -2.5], [-3, -3, 2.5, 2.5]};%{[-3, 3, 3, -3], [-2, -2, 2, 2]}; %
+        boundary_points = {[-3, 3, 3, -3], [-2, -2, 2, 2]};%{[-2.5, 3, 3, -2.5], [-3, -3, 2.5, 2.5]};%{[-3, 3, 3, -3], [-2, -2, 2, 2]}; %
     end
 
     properties (GetAccess = public, SetAccess = protected)
         % Time step for the Robotarium
         time_step = 0.033
-        maxLinearVelocity = 0.1
+        maxLinearVelocity = 1 %0.1
         maxAngularVelocity = 2*pi
         robot_diameter = 0.08
         number_of_agents
@@ -67,7 +67,7 @@ classdef ARobotarium < handle
         show_figure
 
         % Arena parameters
-        boundaries = [-2.5, 3, -3, 2.5];%[-3 3 -2 2]; %
+        boundaries = [-4, 4, -4, 4];%[-3 3 -2 2]; %
     end
 
     methods (Abstract)
@@ -274,7 +274,10 @@ classdef ARobotarium < handle
                     radius_color = ctrl_color;
                 elseif ctrl_flag == 30   % Dark Blue
                     ctrl_color = [0 0 255]/255;
-                    radius_color = ctrl_color;    
+                    radius_color = ctrl_color;
+                elseif ctrl_flag == 40   % Magenta
+                    ctrl_color = [255 0 255]/255;
+                    radius_color = ctrl_color;
                 end
                 
                 this.robot_handle{ii} = patch(...
@@ -362,7 +365,10 @@ classdef ARobotarium < handle
                     radius_color = ctrl_color;
                 elseif ctrl_flag == 30   % Dark Blue
                     ctrl_color = [0 0 255]/255;
-                    radius_color = ctrl_color;    
+                    radius_color = ctrl_color;
+                elseif ctrl_flag == 40   % Magenta
+                    ctrl_color = [255 0 255]/255;
+                    radius_color = ctrl_color;
                 end
                 
                 set(this.robot_handle{ii},'Vertices', transformed(:, 1:2),'FaceColor', ctrl_color);

@@ -1,13 +1,6 @@
 %Initializing multi-robot system with safety barrier
 %certificates (SBC) directly from Robotarium to avoid inter-robot collisions without consieration of
 %uncertainty
-%Wenhao Luo (whluo12@gmail.com)
-%Last modified: 5/25/2020
-
-%code adapted from Georgia Tech Robotarium Repo at 
-%https://github.com/robotarium/robotarium-matlab-simulator
-
-
 
 figure(99)
 clf

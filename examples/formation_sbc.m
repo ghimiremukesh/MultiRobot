@@ -1,16 +1,9 @@
-%Initializing multi-robot system with decentralized probabilistic safety barrier
-%certificates to avoid inter-robot collisions under uncertainty
-%in this example, black robots 6 and 7 act as non-cooperative moving
-%obstacles that do not consider collision avoidance with others
-%Wenhao Luo (whluo12@gmail.com)
-%Last modified: 5/25/2020
-
-%skeleton code used from Georgia Tech Robotarium Repo at 
-%https://github.com/robotarium/robotarium-matlab-simulator
+%Initializing multi-robot system with safety barrier
+%certificates (SBC) directly from Robotarium to avoid inter-robot collisions without consieration of
+%uncertainty
 
 figure(99)
 clf
-warning('off');
 % close all;
 % clear all;
 % Get Robotarium object used to communicate with the robots/simulator
@@ -22,8 +15,7 @@ N = rb.get_available_agents();
 
 % Set the number of agents and whether we would like to save data.  Then,
 % build the Robotarium simulator object!
-N = 7;
-confidence_level = 0.8;
+N = 8;
 SafetyRadius = 0.2; % should manually keep consistent with the initial value in ARobotarium
 r = rb.set_number_of_agents(N).set_save_data(false).build();
 
@@ -40,65 +32,36 @@ r.set_vel_error(zeros(2,N));
 % Initialize x so that we don't run into problems later.  This isn't always
 % necessary
 x = r.get_poses();
-ctrl_flag = [1 10 2 20 3 0 0];
+ctrl_flag = [1 10 2 20 3 30 0 40];
 
 r.set_radius(SafetyRadius);
 r.set_ghost_poses_error(zeros(2,N));
 r.step();
 r.set_ctrl_flag(ctrl_flag);
 
-x = [-1.3 2.4 -1.1 1.7 1.6 -1.3 0.5;...
-    0 -0.2 1.7 -1.7 1.2 -1.8 -2;...
-    0 0 0 0 0 0 0]; %
+% x = [-1.3 2.4 -1.1 1.7 1.6 -1.3;...
+%     0 -0.2 1.7 -1.7 1.2 -1.8;...
+%     0 0 0 0 0 0]; %
 
-% goal_condition = [x(1:2,[2 1 4 3 6 5]) [0.5;2]];% robots move to swap their positions   
+x = [-1.3 2.4 -1.1 1.7 1.6 -1.3 -2.1 1.0;...
+    0 -0.2 1.7 -1.7 1.2 -1.8 0.5 0.5;...
+    0 0 0 0 0 0 0 0]; %
 
-obs_robot_idx = [6 7];
+% x = [-1.3 2.4 -1.1 1.7 1.6 -1.3 0.5;...
+%     0 -0.2 1.7 -1.7 1.2 -1.8 -2;...
+%     0 0 0 0 0 0 0]; %
+
+
+
+% goal_condition = x(1:2,[2 1 4 3 6 5]); % robots move to swap their positions
+             
 
 r.set_poses(x);
 
-
 hold on;
-% handle_targets_dummy = cell(0,1);
-% for ijk_goal = 1:N
-%     
-%     if ctrl_flag(ijk_goal) == 0 % light black
-%         ctrl_color = [0 0 0];
-%         radius_color = [0 0 0];
-%     elseif ctrl_flag(ijk_goal) == 3   % MSFT Blue
-%         ctrl_color = [0 161 241]/255;
-%         radius_color = ctrl_color;
-%     elseif ctrl_flag(ijk_goal) == 2   % MSFT Green
-%         ctrl_color = [124 187 0]/255;
-%         radius_color = ctrl_color;
-%     elseif ctrl_flag(ijk_goal) == 4   % MSFT Yellow
-%         ctrl_color = [255 187 0]/255;
-%         radius_color = ctrl_color;
-%     elseif ctrl_flag(ijk_goal) == 1   % MSFT Red
-%         ctrl_color = [246 83 20]/255;
-%         radius_color = ctrl_color;
-%     elseif ctrl_flag(ijk_goal) == 10   % Dark Red
-%         ctrl_color = [255 0 0]/255;
-%         radius_color = ctrl_color;
-%     elseif ctrl_flag(ijk_goal) == 20   % Dark Green
-%         ctrl_color = [0 102 0]/255;
-%         radius_color = ctrl_color;
-%     elseif ctrl_flag(ijk_goal) == 30   % Dark Blue
-%         ctrl_color = [0 0 255]/255;
-%         radius_color = ctrl_color;
-%     end
-%     
-%     x_pri = [goal_condition(1, ijk_goal)-0.04 goal_condition(1, ijk_goal)+0.04 goal_condition(1, ijk_goal)+0.04 goal_condition(1, ijk_goal)-0.04];
-%     y_pri = [goal_condition(2,ijk_goal)-0.04 goal_condition(2,ijk_goal)-0.04 goal_condition(2,ijk_goal)+0.04 goal_condition(2,ijk_goal)+0.04];
-%     
-%     text(goal_condition(1, ijk_goal)-0.1, goal_condition(2,ijk_goal)+0.3, num2str(ijk_goal),'FontSize',30, 'Color','r');    
-% 
-%     handle_targets_dummy{ijk_goal} = patch(x_pri,y_pri,ctrl_color,'EdgeColor','none','FaceAlpha',0.6);
-% 
-% end
 
 % Create a barrier certificate so that the robots don't collide
-si_barrier_certificate = create_si_pr_barrier_certificate_decentralized('SafetyRadius', 2*SafetyRadius, 'Confidence', confidence_level, 'obs_robot_idx', obs_robot_idx);%
+si_barrier_certificate = create_si_barrier_certificate('SafetyRadius', 2*SafetyRadius);% 
 si_to_uni_dynamics = create_si_to_uni_mapping2();
 fun_rand = @(a,B) [a.*B(1,:);a.*B(2,:)];
         
@@ -109,13 +72,14 @@ initial_conditions = generate_initial_conditions(N, 'Width', r.boundaries(2)-r.b
 % doesn't care about it
 args = {'PositionError', 0.01, 'RotationError', 50};
 init_checker = create_is_initialized(args{:});
-controller = create_si_position_controller();
-timer_to_stop = 3300;
+% controller = create_si_position_controller();
+form_controller = create_potential_controller();
+timer_to_stop = 500;
 timer_count = 1;
 
 record_video_flag = false;
 if record_video_flag
-    writerObj = VideoWriter('PrSBC_decentralized_obstacles.mp4', 'MPEG-4');
+    writerObj = VideoWriter('SBC_centralized.mp4', 'MPEG-4');
     open(writerObj);
     set(gca,'nextplot','replacechildren');
     set(gcf,'Renderer','zbuffer');
@@ -124,7 +88,7 @@ end
 
 rng(150)
 
-font_size = 25;
+font_size = 12;
 
 %% prepare for computing the performance-related metrics
 min_bot_dist_hist = zeros(timer_to_stop,1);
@@ -137,10 +101,10 @@ perf_bot_hist = zeros(timer_to_stop,1);
 while timer_count< timer_to_stop  %(~init_checker(x(1:2,:), goal_condition)) %
     
     if timer_count == 1
-        text(-1.5, -2.5, strcat('Collision-free Confidence Level: ', num2str(confidence_level)),'FontSize',font_size);
+        text(-2.5, -3, 'SBC','FontSize',font_size);
         
     end
-    handle_timestep = text(-0.5,-2.8,strcat('Time Step = ',num2str(timer_count)),'FontSize',font_size);
+    handle_timestep = text(-0.5,-3.5,strcat('Time Step = ',num2str(timer_count)),'FontSize',font_size);
     
     x = r.get_poses();
     
@@ -192,11 +156,13 @@ while timer_count< timer_to_stop  %(~init_checker(x(1:2,:), goal_condition)) %
         r.set_bot_observe_path(x_observe(1:2,:));
     end
     
+   
+%     dxi = controller(x_observe(1:2, :), goal_condition);
+    dxi = form_controller(x_observe(1:2, :));
     
-%     dxi = controller(x(1:2, :), initial_conditions(1:2, :));
-    dxi = controller(x_observe(1:2, :), goal_condition);
     
-    dxi_r = si_barrier_certificate(dxi, x_observe(1:2, :), 'XRandSpan', [x_rand_span_x;x_rand_span_y],'URandSpan', v_rand_span);
+    dxi_r = si_barrier_certificate(dxi, x_observe(1:2, :));
+%     dxi_r = dxi;
 %     fval_r
     
     delta_dxi = dxi_r-dxi;
@@ -213,8 +179,8 @@ while timer_count< timer_to_stop  %(~init_checker(x(1:2,:), goal_condition)) %
     
     r.set_ghost_poses_error(pos_error);
     
-    r.step();
-
+    r.step();   
+   
    
     r.set_video_flag(record_video_flag);
     timer_count = timer_count + 1

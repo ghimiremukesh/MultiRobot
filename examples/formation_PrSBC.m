@@ -109,7 +109,9 @@ initial_conditions = generate_initial_conditions(N, 'Width', r.boundaries(2)-r.b
 % doesn't care about it
 args = {'PositionError', 0.01, 'RotationError', 50};
 init_checker = create_is_initialized(args{:});
-controller = create_si_position_controller();
+% controller = create_si_position_controller();
+
+form_controller = create_potential_controller();
 timer_to_stop = 3300;
 timer_count = 1;
 
@@ -194,7 +196,8 @@ while timer_count< timer_to_stop  %(~init_checker(x(1:2,:), goal_condition)) %
     
     
 %     dxi = controller(x(1:2, :), initial_conditions(1:2, :));
-    dxi = controller(x_observe(1:2, :), goal_condition);
+%     dxi = controller(x_observe(1:2, :), goal_condition);
+    dxi = form_controller(x_observe(1:2, :));
     
     dxi_r = si_barrier_certificate(dxi, x_observe(1:2, :), 'XRandSpan', [x_rand_span_x;x_rand_span_y],'URandSpan', v_rand_span);
 %     fval_r
@@ -217,7 +220,7 @@ while timer_count< timer_to_stop  %(~init_checker(x(1:2,:), goal_condition)) %
 
    
     r.set_video_flag(record_video_flag);
-    timer_count = timer_count + 1
+    timer_count = timer_count + 1;
     delete(handle_timestep)
  
 end
