@@ -1,5 +1,7 @@
 ## This repo is an implementation of the master branch (repo described 
-below) in a different multi robot case (formation control). 
+## below) in a different multi robot case (formation control). 
+
+--------------------------------------------------------------------------
 
 
 
