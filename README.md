@@ -1,3 +1,8 @@
+## This repo is an implementation of the master branch (repo described 
+below) in a different multi robot case (formation control). 
+
+
+
 This repo maintains the code for the NeurIPS 2020 paper:
 
 Multi-Robot Collision Avoidance under Uncertainty with Probabilistic Safety Barrier Certificates  
