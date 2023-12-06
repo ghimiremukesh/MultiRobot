@@ -47,8 +47,8 @@ r.set_ghost_poses_error(zeros(2,N));
 r.step();
 r.set_ctrl_flag(ctrl_flag);
 
-x = [-1.3 2.4 -1.1 1.7 1.6 -1.3 0.5;...
-    0 -0.2 1.7 -1.7 1.2 -1.8 -2;...
+x = [-1.3 2.4 -1.1 1.5 1.6 -1.3 0.5;...
+    0 -0.2 1.7 -1.5 1.2 -1.8 -2;...
     0 0 0 0 0 0 0]; %
 
 % goal_condition = [x(1:2,[2 1 4 3 6 5]) [0.5;2]];% robots move to swap their positions   
@@ -112,10 +112,10 @@ init_checker = create_is_initialized(args{:});
 % controller = create_si_position_controller();
 
 form_controller = create_potential_controller();
-timer_to_stop = 3300;
+timer_to_stop = 1000;
 timer_count = 1;
 
-record_video_flag = false;
+record_video_flag = true;  % record video
 if record_video_flag
     writerObj = VideoWriter('PrSBC_decentralized_obstacles.mp4', 'MPEG-4');
     open(writerObj);
@@ -222,6 +222,10 @@ while timer_count< timer_to_stop  %(~init_checker(x(1:2,:), goal_condition)) %
     r.set_video_flag(record_video_flag);
     timer_count = timer_count + 1;
     delete(handle_timestep)
+
+     if timer_count == 149
+        pause(0.1);
+    end
  
 end
 if record_video_flag

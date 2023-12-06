@@ -67,7 +67,7 @@ fun_rand = @(a,B) [a.*B(1,:);a.*B(2,:)];
 initial_conditions = generate_initial_conditions(N, 'Width', r.boundaries(2)-r.boundaries(1)-0.1, 'Height', r.boundaries(4)-r.boundaries(3)-0.1, 'Spacing', 0.2);
 
 controller = create_si_position_controller();
-timer_to_stop = 1000;
+timer_to_stop = 500;
 timer_count = 1;
 
 form_controller = create_potential_controller();

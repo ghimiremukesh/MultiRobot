@@ -43,8 +43,8 @@ r.set_ctrl_flag(ctrl_flag);
 %     0 -0.2 1.7 -1.7 1.2 -1.8;...
 %     0 0 0 0 0 0]; %
 
-x = [-1.3 2.4 -1.1 1.7 1.6 -1.3 -2.1 1.0;...
-    0 -0.2 1.7 -1.7 1.2 -1.8 0.5 0.5;...
+x = [-1.3 2.4 -1.1 1.5 1.6 -1.3 -2.1 1.0;...
+    0 -0.2 1.7 -1.5 1.2 -1.8 0.5 0.5;...
     0 0 0 0 0 0 0 0]; %
 
 % x = [-1.3 2.4 -1.1 1.7 1.6 -1.3 0.5;...
@@ -74,10 +74,10 @@ args = {'PositionError', 0.01, 'RotationError', 50};
 init_checker = create_is_initialized(args{:});
 % controller = create_si_position_controller();
 form_controller = create_potential_controller();
-timer_to_stop = 500;
+timer_to_stop = 1000;
 timer_count = 1;
 
-record_video_flag = false;
+record_video_flag = true;
 if record_video_flag
     writerObj = VideoWriter('SBC_centralized.mp4', 'MPEG-4');
     open(writerObj);
@@ -185,6 +185,10 @@ while timer_count< timer_to_stop  %(~init_checker(x(1:2,:), goal_condition)) %
     r.set_video_flag(record_video_flag);
     timer_count = timer_count + 1
     delete(handle_timestep)
+
+    if timer_count == 250
+        pause(0.1);
+    end
  
 end
 if record_video_flag

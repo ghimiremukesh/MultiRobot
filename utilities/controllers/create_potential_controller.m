@@ -7,7 +7,7 @@
 function [ created_potential_controller ] = create_potential_controller()
     global x y z
     syms x y z
-    R_0 = 2.4 * sqrt(2); a=2.0; b=0.3; c=5; d=pi/2;
+    R_0 = 1.5 * sqrt(2); a=1.0; b=0.3; c=5; d=pi/2;
     gamma = (sqrt(x.^2 + y.^2) - (a + b*sin(c*atan2(y, x) + d)));
     beta_0 = R_0 - sqrt(x.^2 + y.^2);
     nav_sym = (gamma.^2)./(gamma.^2 + beta_0);
