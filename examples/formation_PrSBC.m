@@ -22,7 +22,7 @@ N = rb.get_available_agents();
 
 % Set the number of agents and whether we would like to save data.  Then,
 % build the Robotarium simulator object!
-N = 7;
+N = 8;
 confidence_level = 0.8;
 SafetyRadius = 0.2; % should manually keep consistent with the initial value in ARobotarium
 r = rb.set_number_of_agents(N).set_save_data(false).build();
@@ -40,20 +40,20 @@ r.set_vel_error(zeros(2,N));
 % Initialize x so that we don't run into problems later.  This isn't always
 % necessary
 x = r.get_poses();
-ctrl_flag = [1 10 2 20 3 0 0];
+ctrl_flag = [1 10 2 20 3 30 0 40];
 
 r.set_radius(SafetyRadius);
 r.set_ghost_poses_error(zeros(2,N));
 r.step();
 r.set_ctrl_flag(ctrl_flag);
 
-x = [-1.3 2.4 -1.1 1.5 1.6 -1.3 0.5;...
-    0 -0.2 1.7 -1.5 1.2 -1.8 -2;...
-    0 0 0 0 0 0 0]; %
+x = [-1.3 2.4 -1.1 1.5 1.6 -1.3 -2.1 1.0;...
+    0 -0.2 1.7 -1.5 1.2 -1.8 0.5 0.5;...
+    0 0 0 0 0 0 0 0]; %
 
 % goal_condition = [x(1:2,[2 1 4 3 6 5]) [0.5;2]];% robots move to swap their positions   
 
-obs_robot_idx = [6 7];
+obs_robot_idx = [7 8];
 
 r.set_poses(x);
 
@@ -115,7 +115,7 @@ form_controller = create_potential_controller();
 timer_to_stop = 1000;
 timer_count = 1;
 
-record_video_flag = true;  % record video
+record_video_flag = false;  % record video
 if record_video_flag
     writerObj = VideoWriter('PrSBC_decentralized_obstacles.mp4', 'MPEG-4');
     open(writerObj);
@@ -223,7 +223,7 @@ while timer_count< timer_to_stop  %(~init_checker(x(1:2,:), goal_condition)) %
     timer_count = timer_count + 1;
     delete(handle_timestep)
 
-     if timer_count == 149
+    if timer_count == 900
         pause(0.1);
     end
  
