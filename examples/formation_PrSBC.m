@@ -223,9 +223,9 @@ while timer_count< timer_to_stop  %(~init_checker(x(1:2,:), goal_condition)) %
     timer_count = timer_count + 1;
     delete(handle_timestep)
 
-    if timer_count == 900
-        pause(0.1);
-    end
+%     if timer_count == 900
+%         pause(0.1);
+%     end
  
 end
 if record_video_flag
