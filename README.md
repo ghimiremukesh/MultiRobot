@@ -3,7 +3,12 @@
 
 --------------------------------------------------------------------------
 
+### Formation Control Using SBC
+![gif](/simulation/SBC.gif)
 
+
+### Formation Control Using PrSBC
+![gif](/simulation/PrSBC.gif)
 
 This repo maintains the code for the NeurIPS 2020 paper:
 
