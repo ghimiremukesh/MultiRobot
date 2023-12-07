@@ -1,14 +1,25 @@
-## This repo is an implementation of the master branch (repo described 
-## below) in a different multi robot case (formation control). 
+## This repo is an implementation of the master branch (repo described below) in a different multi robot case (formation control). 
 
---------------------------------------------------------------------------
+<hr>
 
-### Formation Control Using SBC
+### Simulations
+
+* Formation Control Using SBC
 ![gif](/simulation/SBC.gif)
 
 
-### Formation Control Using PrSBC
+* Formation Control Using PrSBC
 ![gif](/simulation/PrSBC.gif)
+
+1) Navigate to the root directory and run the "init.m" to initialize the addition of directories.
+
+2) Go to path "..\examples" and run the simulations
+
+    a) "formation_unrst.m" to simulate formation control without considering uncertainty and collision  
+    b) "formation_sbc.m" to simulate formation control with uncertainties and collision avoidance using SBC   
+    c) "formation_PrSBC.m" to simulate formation control using PrSBC
+
+<hr>
 
 This repo maintains the code for the NeurIPS 2020 paper:
 
